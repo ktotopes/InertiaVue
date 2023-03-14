@@ -19,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+//        session()->put('user', ['kirill@mail.ru', 12345]);
+//        dump(session()->all());
     }
 }

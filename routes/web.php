@@ -22,8 +22,9 @@ Route::middleware('auth')
 
 Route::controller(\App\Http\Controllers\AuthController::class)
     ->group(function () {
-    Route::post('/login', 'login')->name('login')->middleware('guest');
-    Route::delete('/logout', 'logout')->name('logout')->middleware('auth');
-});
+        Route::post('/login', 'login')->name('login')->middleware('guest');
+        Route::delete('/logout', 'logout')->name('logout')->middleware('auth');
+    });
 
 Route::inertia('/login', 'Login');
+

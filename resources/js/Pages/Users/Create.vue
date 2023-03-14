@@ -40,6 +40,15 @@
                         <div class="text-red-500 mt-2" v-if="form.errors.password">{{ form.errors.password }}</div>
                     </div>
 
+                    <div class="col-span-6">
+                        <label class="block text-sm font-medium text-gray-700">Картинки</label>
+                        <input :class="{'border-red-500':form.errors.image}" @change="onFileChange" type="file"
+                               name="image" multiple
+                               class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+
+                        <div class="text-red-500 mt-2" v-if="form.errors.image">{{ form.errors.image }}</div>
+                    </div>
+
                 </div>
             </div>
 
@@ -55,23 +64,35 @@
 
 <script>
 import { Link, useForm } from "@inertiajs/vue3";
+import axios from "axios";
+import config from "tailwindcss/defaultConfig";
+import { ref } from "vue";
 
 export default {
     components: {
         Link
     },
     name: "Create",
+    methods: {
+        onFileChange(event) {
+            console.log(this.form.images);
+            this.form.images = event.target.files;
+        },
+    },
     setup() {
-      const form = useForm({
-          name:null,
-          email:null,
-          password:null,
-      })
+        const form = useForm({
+            name: null,
+            email: null,
+            password: null,
+            images: [],
+        })
 
         function store() {
             form.post(route('users.store'))
         }
+
         return { form, store }
-    }
+    },
+
 }
 </script>

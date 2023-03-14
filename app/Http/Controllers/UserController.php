@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
+use Psy\Util\Str;
 
 class UserController extends Controller
 {
@@ -17,7 +19,7 @@ class UserController extends Controller
 //        dd(User::paginate(5)->toArray());
         return Inertia::render('Users/Index', [
             'title' => 'Users',
-            'users' => User::orderByDesc('created_at')->paginate(5),
+            'users' => UserResource::collection(User::orderByDesc('created_at')->paginate(5)),
         ]);
     }
 
@@ -36,13 +38,25 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        (new User(
-            $request->validate([
-                'name'     => 'required',
-                'email'    => ['required', 'email', Rule::unique('users')],
-                'password' => 'required',
-            ])
-        ))->save();
+        $user = new User();
+
+        if ($request->hasFile('images')) {
+            $imgs = [];
+            foreach ($request->file('images') as $img) {
+                $ext = $img->extension();
+                $file = \Illuminate\Support\Str::random(6) . '.' . $ext;
+                $img->storeAs('public/customer', $file);
+                $imgs[] = $file;
+            }
+        }
+
+        $sI = implode(',', $imgs);
+
+        $user->image = $sI;
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = $request->password;
+        $user->save();
 
         return redirect()->route('users.index');
     }

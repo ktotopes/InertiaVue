@@ -10,7 +10,6 @@ class IndexController extends Controller
     public function index()
     {
 //        return \inertia('home',[]); alternative
-
         return Inertia::render('Home', [
             'title' => 'Home',
         ]);
